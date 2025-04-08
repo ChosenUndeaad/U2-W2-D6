@@ -1,45 +1,28 @@
-import { Component } from "react";
-import { Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { Button, Form } from "react-bootstrap";
 
 const AddComment = ({ asin }) => {
-  // state = {
-  //   comment: {
-  //     comment: "",
-  //     rate: 1,
-  //     elementId: this.props.asin,
-  //   },
-  // };
-
   const [comment, setComment] = useState({
     comment: "",
     rate: 1,
     elementId: asin,
   });
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.asin !== this.props.asin) {
-  //     this.setState({
-  //       comment: {
-  //         ...this.state.comment,
-  //         elementId: this.props.asin,
-  //       },
-  //     });
-  //   }
-  // }
-
   useEffect(() => {
-    setComment((prevComment) => ({ ...prevComment, elementId: asin }));
-  });
+    setComment((prevComment) => ({
+      ...prevComment,
+      elementId: asin,
+    }));
+  }, [asin]);
 
-  sendComment = async (e) => {
+  const sendComment = async (e) => {
     e.preventDefault();
     try {
-      let response = await fetch(
+      const response = await fetch(
         "https://striveschool-api.herokuapp.com/api/comments",
         {
           method: "POST",
-          body: JSON.stringify(this.state.comment),
+          body: JSON.stringify(comment),
           headers: {
             "Content-type": "application/json",
             Authorization:
@@ -47,14 +30,13 @@ const AddComment = ({ asin }) => {
           },
         }
       );
+
       if (response.ok) {
         alert("Recensione inviata!");
-        this.setState({
-          comment: {
-            comment: "",
-            rate: 1,
-            elementId: this.props.asin,
-          },
+        setComment({
+          comment: "",
+          rate: 1,
+          elementId: asin,
         });
       } else {
         throw new Error("Qualcosa è andato storto");
@@ -66,19 +48,17 @@ const AddComment = ({ asin }) => {
 
   return (
     <div className='my-3'>
-      <Form onSubmit={this.sendComment}>
+      <Form onSubmit={sendComment}>
         <Form.Group className='mb-2'>
           <Form.Label>Recensione</Form.Label>
           <Form.Control
             type='text'
             placeholder='Inserisci qui il testo'
-            value={this.state.comment.comment}
+            value={comment.comment}
             onChange={(e) =>
-              this.setState({
-                comment: {
-                  ...this.state.comment,
-                  comment: e.target.value,
-                },
+              setComment({
+                ...comment,
+                comment: e.target.value,
               })
             }
           />
@@ -87,21 +67,19 @@ const AddComment = ({ asin }) => {
           <Form.Label>Valutazione</Form.Label>
           <Form.Control
             as='select'
-            value={this.state.comment.rate}
+            value={comment.rate}
             onChange={(e) =>
-              this.setState({
-                comment: {
-                  ...this.state.comment,
-                  rate: e.target.value,
-                },
+              setComment({
+                ...comment,
+                rate: parseInt(e.target.value), // optional: ensure it's a number
               })
             }
           >
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
+            {[1, 2, 3, 4, 5].map((val) => (
+              <option key={val} value={val}>
+                {val}
+              </option>
+            ))}
           </Form.Control>
         </Form.Group>
         <Button variant='primary' type='submit'>
