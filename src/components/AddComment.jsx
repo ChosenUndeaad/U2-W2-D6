@@ -71,7 +71,7 @@ const AddComment = ({ asin }) => {
             onChange={(e) =>
               setComment({
                 ...comment,
-                rate: parseInt(e.target.value), // optional: ensure it's a number
+                rate: parseInt(e.target.value),
               })
             }
           >

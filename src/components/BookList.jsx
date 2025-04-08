@@ -4,15 +4,12 @@ import { Col, Form, Row } from "react-bootstrap";
 import CommentArea from "./CommentArea";
 
 const BookList = ({ books }) => {
-  // Stato per la ricerca e il libro selezionato
   const [search, setSearch] = useState({ searchQuery: "", asin: "" });
 
-  // Funzione per cambiare il valore di asin (selezionare un libro)
   const changeAsin = (asin) => {
     setSearch((prevSearch) => ({ ...prevSearch, asin }));
   };
 
-  // Filtrare i libri in base alla ricerca
   const filteredBooks = books.filter((b) =>
     b.title.toLowerCase().includes(search.searchQuery.toLowerCase())
   );
